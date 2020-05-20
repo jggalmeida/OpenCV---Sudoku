@@ -1,18 +1,32 @@
 # Standard imports
 import cv2
+import glob
 import numpy as np
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 
-# Read image
+path = './data/*'
+imagesPath = [img for img in glob.glob(path)]
+# print( glob.glob(path)[0] in "jpg")
+images = []
+
+
+images = list(map(lambda x: cv2.imread(x, cv2.IMREAD_GRAYSCALE),imagesPath))
+
+Read image
 img = cv2.imread("data/sudoku2.jpg", cv2.IMREAD_COLOR)
 
 kernel = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
-opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+noSpaceKernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(4,4))
+opening = cv2.dilate(img,noSpaceKernel)
+# opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
 
 
 gray_image = cv2.cvtColor(opening, cv2.COLOR_BGR2GRAY)
- 
+
+
+
+
 #binary image
 _,thresh = cv2.threshold(gray_image,71,255,cv2.THRESH_BINARY_INV)
 
